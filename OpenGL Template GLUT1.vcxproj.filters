@@ -1479,5 +1479,7 @@
     <None Include="lib\x64\GL\DLLs\glew32.dll">
       <Filter>Resource Files\template-built-ins\DLLs\64b</Filter>
     </None>
+    <None Include="03_02_Shader.frag" />
+    <None Include="03_02_Shader.vert" />
   </ItemGroup>
 </Project>

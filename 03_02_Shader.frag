@@ -30,8 +30,33 @@ void main(void)
 	case 1: 
 		out_Color=vec4 (0.0, 0.0, 1.0, 0.0);
 		break;
+	// rosu
 	case 2:
 		out_Color=vec4 (1.0, 0.0, 0.0, 0.0);
+		break;
+	// gri
+	case 3:
+		out_Color=vec4(0.2f, 0.2f, 0.2f, 1.0f);
+		break;
+	// verde 
+	case 4:
+		out_Color=vec4(0.0f, 0.5f, 0.0f, 1.0f);
+		break;
+	// galben 
+	case 6:
+		out_Color=vec4(1.0f, 1.0f, 0.0f, 1.0f);
+		break;	
+	// negru 
+	case 5:
+		out_Color=vec4(0.0f, 0.0f, 0.0f, 1.0f);
+		break;	
+	// portocaliu 
+	case 7:
+		out_Color=vec4(1.0f, 0.5f, 0.0f, 1.0f);
+		break;
+	// gri deschis 
+	case 8:
+		out_Color=vec4(0.5f, 0.5f, 0.5f, 1.0f);
 		break;
 	default:
 		break;
