@@ -47,6 +47,9 @@ void main(void)
 	// gri deschis 
 	case 8:
 		out_Color=vec4(0.5f, 0.5f, 0.5f, 1.0f);
+	//alb
+	case 9: 
+		out_Color = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 		break;
 	default:
 		break;
