@@ -202,8 +202,8 @@ void CreateVBO(void)
 		  30.0f , 20.0f , 0.0f, 1.0f,
 
 		  5.0f, 7.0f, 0.0f, 1.0f,
-		  18.0f, 10.0f, 0.0f, 1.0f,
-		  18.0f, -10.0f, 0.0f, 1.0f,
+		  27.0f, 15.0f, 0.0f, 1.0f,
+		  27.0f, -15.0f, 0.0f, 1.0f,
 		  5.0f, -7.0f, 0.0f, 1.0f,
 	};
 
@@ -359,7 +359,7 @@ void RenderFunction(void)
 	myMatrix = resizeMatrix * matrTransl;
 	DrawCar(myMatrix, 9, true);
 
-	matrTransl = glm::translate(glm::mat4(1.0f), glm::vec3(-80.0, l + 10, 0.0));
+	matrTransl = glm::translate(glm::mat4(1.0f), glm::vec3(-100.0, l + 10, 0.0));
 	angle = l / 20;
 	matrRot = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0, 0.0, 1.0));
 	myMatrix = resizeMatrix * matrTransl * matrRot;
@@ -368,8 +368,8 @@ void RenderFunction(void)
 
 	codCol = 2;
 	glUniform1i(codColLocation, codCol);
-	matrTransl = glm::translate(glm::mat4(1.0f), glm::vec3(-120.0, l + 10, 0.0));
-	angle = l / 20;
+	matrTransl = glm::translate(glm::mat4(1.0f), glm::vec3(-100.0, l + 10, 0.0));
+	angle = l / 20 + 3.1415;
 	matrRot = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0, 0.0, 1.0));
 	myMatrix = resizeMatrix * matrTransl * matrRot;
 	glUniformMatrix4fv(myMatrixLocation, 1, GL_FALSE, &myMatrix[0][0]);
