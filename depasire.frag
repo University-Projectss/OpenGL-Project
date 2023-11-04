@@ -1,13 +1,3 @@
-//
-// ================================================
-// | Grafica pe calculator                        |
-// ================================================
-// | Laboratorul III - 03_02_Shader.frag |
-// ======================================
-// 
-//  Shaderul de fragment / Fragment shader - afecteaza culoarea pixelilor;
-//
-
 #version 330 core
 
 //	Variabile de intrare (dinspre Shader.vert);
