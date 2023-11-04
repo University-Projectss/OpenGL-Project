@@ -40,20 +40,20 @@ GLuint
 
 //	Dimensiunile ferestrei de afisare;
 GLfloat
-	winWidth = 600, winHeight = 750;
+	winWidth = 500, winHeight = 1000;
 
 //	Variabile catre matricile de transformare;
 glm::mat4
-	myMatrix, resizeMatrix, matrTransl, matrScale1, matrScale2, matrRot, matrDepl;
+	myMatrix, resizeMatrix, matrTransl, matrRot;
 
 //	Variabila ce determina schimbarea culorii pixelilor in shader;
 int codCol;			
 
 //	Variabile pentru proiectia ortogonala;
-float xMin = -450.f, xMax = 450.f, yMin = 0.f, yMax = 300.f;
+float xMin = -250.f, xMax = 250.f, yMin = -500.f, yMax = 500.f;
 
 //	Variabile pentru deplasarea pe axa Ox si pentru rotatie;
-float i = 0.0, alpha = 0.0, step=0.1, beta = 0.002, angle = 0;
+float i = -375.0, j = -750.0, alpha = 0.0, alpha2 = 0.0, step=0.5, step2=1.0, beta = 0.002, angle = 0, aux = 0.f;
 
 //	Functie pentru afisarea matricei de transformare;
 void DisplayMatrix()
@@ -71,10 +71,15 @@ void DisplayMatrix()
 void MoveUp(void)
 {
 	i = i + alpha;
-	if (i > 300.0)			
-		alpha =  0;		
-	else if (i < 0.0)
+	j = j + alpha2;
+	if (i > 600.0) {
+		alpha = 0;
+		alpha2 = 0;
+	}
+	else if (i < 0.0) {
 		alpha = step;
+		alpha2 = step2;
+	}
 	angle = angle - beta;	//	Se actualizeaza unghiul de rotatie constant (mentine orbitarea);
 	glutPostRedisplay();	//	Forteza redesenarea scenei;
 }
@@ -84,6 +89,7 @@ void UseMouse(int button, int state, int x, int y)
 {
 	
 			alpha = step;
+			alpha2 = step2;
 		glutIdleFunc(MoveUp);
 	
 }
@@ -94,7 +100,7 @@ void UseMouse(int button, int state, int x, int y)
 //  Shaderul de fragment / Fragment shader - afecteaza culoarea pixelilor;
 void CreateShaders(void)
 {
-	ProgramId = LoadShaders("03_02_Shader.vert", "03_02_Shader.frag");
+	ProgramId = LoadShaders("depasire.vert", "depasire.frag");
 	glUseProgram(ProgramId);
 }
 
@@ -105,91 +111,70 @@ void CreateVBO(void)
 	//  Coordonatele varfurilor;
 	GLfloat Vertices[] = {
 
-	//	Varfuri pentru axa principala (0-1);
-		0.0f, -300.0f, 0.0f, 1.0f,
-		0.0f, 300.0f, 0.0f, 1.0f,
+	//	Varfuri pentru axa principala;
+		0.0f, -500.0f, 0.0f, 1.0f,
+		0.0f, 500.0f, 0.0f, 1.0f,
 
-	//	Varfuri pentru masina (2-5);
-		-100.0f,  -50.0f, 0.0f, 1.0f,
-		100.0f, -50.0f, 0.0f, 1.0f,
-		100.0f,  100.0f, 0.0f, 1.0f,
-		-100.0f,  100.0f, 0.0f, 1.0f,
+	//	Varfuri pentru masina;
+		-25.0f,  -50.0f, 0.0f, 1.0f,
+		 25.0f,  -50.0f, 0.0f, 1.0f,
+		 25.0f,   50.0f, 0.0f, 1.0f,
+		-25.0f,   50.0f, 0.0f, 1.0f,
 
-	// Varfuri pentru colorare trotuar (6-9, 10-13);
-		340.0f,  300.0f, 0.0f, 1.0f,
-		450.0f,  300.0f, 0.0f, 1.0f, 
-		450.0f,  0.0f, 0.0f, 1.0f, 
-		340.0f,  0.0f, 0.0f, 1.0f, 
+	// Varfuri pentru trotuar;
+		200.0f,  500.0f, 0.0f, 1.0f,
+		250.0f,  500.0f, 0.0f, 1.0f, 
+		250.0f, -500.0f, 0.0f, 1.0f, 
+		200.0f,  -500.0f, 0.0f, 1.0f, 
 
-		-340.0f,  300.0f, 0.0f, 1.0f,
-		-340.0f,  0.0f, 0.0f, 1.0f,
-		-450.0f,  0.0f, 0.0f, 1.0f,
-		-450.0f,  300.0f, 0.0f, 1.0f,
+		-200.0f,  500.0f, 0.0f, 1.0f,
+		-200.0f,  -500.0f, 0.0f, 1.0f,
+		-250.0f,  -500.0f, 0.0f, 1.0f,
+		-250.0f,  500.0f, 0.0f, 1.0f,
 
-	// Varfuri pentru axele imaginare de pe cele doua benzi (14-15, 16-17);
-		175.0f, -300.0f, 0.0f, 1.0f,
-		175.0f, 300.0f, 0.0f, 1.0f, 
+	// Varfuri pentru tufis;
+		175.0f,  500.0f, 0.0f, 1.0f,
+		200.0f,  500.0f, 0.0f, 1.0f,
+		200.0f,  -500.0f, 0.0f, 1.0f,
+		175.0f,  -500.0f, 0.0f, 1.0f,
 
-		-175.0f, -300.0f, 0.0f, 1.0f,
-		-175.0f, 300.0f, 0.0f, 1.0f, 
+		-175.0f,  500.0f, 0.0f, 1.0f,
+		-175.0f,  -500.0f, 0.0f, 1.0f,
+		-200.0f,  -500.0f, 0.0f, 1.0f,
+		-200.0f,  500.0f, 0.0f, 1.0f,
 
-	// Varfuri pentru tufis (18-21, 22-25);
-		340.0f,  300.0f, 0.0f, 1.0f,
-		370.0f,  300.0f, 0.0f, 1.0f,
-		370.0f,  0.0f, 0.0f, 1.0f,
-		340.0f,  0.0f, 0.0f, 1.0f,
+	// Varf pentru felinar;
+		0.0f,  0.0f, 0.0f, 1.0f,
 
-		-340.0f,  300.0f, 0.0f, 1.0f,
-		-340.0f,  0.0f, 0.0f, 1.0f,
-		-370.0f,  0.0f, 0.0f, 1.0f,
-		-370.0f,  300.0f, 0.0f, 1.0f,
+	// Varfuri pentru faruri;
+		-20.0f,  45.0f, 0.0f, 1.0f,
+	     20.0f,  45.0f, 0.0f, 1.0f, 
 
-	// Varfuri pentru felinare (26 - 29);
-		370.0f,  0.0f, 0.0f, 1.0f,
-		370.0f,  50.0f, 0.0f, 1.0f,
-		370.0f,  100.0f, 0.0f, 1.0f,
-		370.0f,  150.0f, 0.0f, 1.0f,
-		370.0f,  200.0f, 0.0f, 1.0f,
-		370.0f,  250.0f, 0.0f, 1.0f,
-		370.0f,  300.0f, 0.0f, 1.0f, 
+	// Varfuri pentru bara din spate a masinii;
+		-25.0f,  -50.0f, 0.0f, 1.0f,
+		 25.0f,  -50.0f, 0.0f, 1.0f,
+		 25.0f,  -45.0f, 0.0f, 1.0f,
+		-25.0f,  -45.0f, 0.0f, 1.0f,
 
-		-370.0f,  0.0f, 0.0f, 1.0f,
-		-370.0f,  50.0f, 0.0f, 1.0f,
-		-370.0f,  100.0f, 0.0f, 1.0f,
-		-370.0f,  150.0f, 0.0f, 1.0f,
-		-370.0f,  200.0f, 0.0f, 1.0f,
-		-370.0f,  250.0f, 0.0f, 1.0f,
-		-370.0f,  300.0f, 0.0f, 1.0f, 
+	// Varfuri pentru lumina farurilor;
+		-20.0f,  45.0f, 0.0f, 1.0f,
+		-40.0f,  100.0f, 0.0f, 1.0f,
+     	  0.0f,  100.0f, 0.0f, 1.0f,
 
-	// Varfuri pentru faruri (40-41);
-		50.0f,  100.0f, 0.0f, 1.0f,
-		-50.0f,  100.0f, 0.0f, 1.0f, 
+		 20.0f,  45.0f, 0.0f, 1.0f,
+		  0.0f, 100.0f, 0.0f, 1.0f,
+		 40.0f, 100.0f, 0.0f, 1.0f,
 
-	// Varfuri pentru bara din spate a masinii (42-45);
-		-100.0f,  -50.0f, 0.0f, 1.0f,
-		100.0f, -50.0f, 0.0f, 1.0f,
-		100.0f, -25.0f, 0.0f, 1.0f,
-		-100.0f,  -25.0f, 0.0f, 1.0f,
+	// Varfuri pentru stopuri;
+		-10.0f, -55.0f, 0.0f, 1.0f,
+		 10.0f, -55.0f, 0.0f, 1.0f,
 
-	// Varfuri pentru lumina farurilor (46-48, 49-51);
-		-50.0f,  100.0f, 0.0f, 1.0f,
-		-100.0f, 150.0f, 0.0f, 1.0f,
-		-10.0f, 150.0f, 0.0f, 1.0f,
+	// Varfuri pentru semnalizare;
+		 -25.0f, -50.0f, 0.0f, 1.0f,
+		 -10.0f, -55.0f, 0.0f, 1.0f,
 
-		50.0f,  100.0f, 0.0f, 1.0f,
-		100.0f, 150.0f, 0.0f, 1.0f,
-		-10.0f, 150.0f, 0.0f, 1.0f,
-
-	// Varfuri pentru stopuri (52-53);
-		-50.0f, -45.0f, 0.0f, 1.0f,
-		50.0f, -45.0f, 0.0f, 1.0f,
-
-	// Varfuri pentru semnalizare (54-55, 56-57);
-		- 50.0f, -45.0f, 0.0f, 1.0f,
-		-100.0f,  -50.0f, 0.0f, 1.0f,
-
-		50.0f, -45.0f, 0.0f, 1.0f, 
-		100.0f, -50.0f, 0.0f, 1.0f
+		  10.0f, -55.0f, 0.0f, 1.0f, 
+		  25.0f, -50.0f, 0.0f, 1.0f
 	};
 
 	//  Culorile axelor;
@@ -262,174 +247,167 @@ void Initialize(void)
 	myMatrixLocation = glGetUniformLocation(ProgramId, "myMatrix");
 }
 
+void DrawCar(glm::mat4 mymatrix, int carCodCol) {
+	glUniformMatrix4fv(myMatrixLocation, 1, GL_FALSE, &myMatrix[0][0]);
+	// ------> DESENAREA MASINII
+	codCol = carCodCol;
+	glUniform1i(codColLocation, codCol);
+	glDrawArrays(GL_POLYGON, 2, 4);
+
+	// ------> DESENAREA FARURILOR MASINII
+	codCol = 6;
+	glUniform1i(codColLocation, codCol);
+	glPointSize(10.0);
+	glDisable(GL_POINT_SMOOTH);
+	glDrawArrays(GL_POINTS, 23, 2);
+
+	// ------> COSMETIZAREA MASINII - BARA + LUMINA FARURI + STOPURI
+	codCol = 5;
+	glUniform1i(codColLocation, codCol);
+	glDrawArrays(GL_POLYGON, 25, 4);
+
+	codCol = 6;
+	glUniform1i(codColLocation, codCol);
+	glDrawArrays(GL_TRIANGLES, 29, 6);
+
+	codCol = 2;
+	glLineWidth(30.0);
+	glUniform1i(codColLocation, codCol);
+	glDrawArrays(GL_LINES, 35, 2);
+
+	codCol = 7;
+	glLineWidth(50.0);
+	glUniform1i(codColLocation, codCol);
+	glDrawArrays(GL_LINES, 37, 2);
+	glDrawArrays(GL_LINES, 39, 2);
+
+}
+
 //  Functia de desenarea a graficii pe ecran;
 void RenderFunction(void)
 {
-	glClear(GL_COLOR_BUFFER_BIT);			//  Se curata ecranul OpenGL pentru a fi desenat noul continut;
+	glClear(GL_COLOR_BUFFER_BIT);
 	
-	resizeMatrix = glm::ortho(xMin, xMax, yMin, yMax);							//	"Aducem" scena la "patratul standard" [-1,1]x[-1,1];
-	matrTransl = glm::translate(glm::mat4(1.0f), glm::vec3(0.0, i, 0.0));		//	Se translateaza de-a lungul axei Oy;
-	matrScale1 = glm::scale(glm::mat4(1.0f), glm::vec3(0.5, 0.3, 0.0));			//	Se scaleaza coordonatele initiale si se obtine masina;
+	resizeMatrix = glm::ortho(xMin, xMax, yMin, yMax);
 	
 	//	Matricea de redimensionare (pentru elementele "fixe" - axele);
 	myMatrix = resizeMatrix;
+	glUniformMatrix4fv(myMatrixLocation, 1, GL_FALSE, &myMatrix[0][0]);
 
 	//	------> DESENAREA AXEI PRINCIPALE (DESPARTIRE BENZI)
 
 	codCol = 0;
-	//	Transmiterea variabilelor uniforme pentru MATRICE DE TRANSFORMARE si COLORARE spre shadere;
-	glUniformMatrix4fv(myMatrixLocation, 1, GL_FALSE, &myMatrix[0][0]);
 	glUniform1i(codColLocation, codCol);
-	//  Functia de desenare primeste 3 argumente:
-	//  - arg1 = tipul primitivei desenate,
-	//  - arg2 = indicele primului punct de desenat din buffer,
-	//  - arg3 = numarul de puncte consecutive de desenat;
+	glLineWidth(10.0);
 	glDrawArrays(GL_LINES, 0, 2);
 
-	// ------> DESENAREA AXELOR IMAGINARE DE PE BENZI 
-	// - le-am adaugat ca sa putem muta masina de pe o axa pe alta, ele sunt gri ca soseaua
+	//  ------> DESENAREA MASINII 1
+	matrTransl = glm::translate(glm::mat4(1.0f), glm::vec3(100.0, i, 0.0));
+	myMatrix = resizeMatrix * matrTransl;
+	DrawCar(myMatrix, 1);
 
-	codCol = 8;									//  Culoarea;
-	glUniform1i(codColLocation, codCol);		//	Transmiterea variabilei uniforme pentru COLORARE spre shadere;
-	glLineWidth(15.0);							//  Se seteaza dimensiunea punctelor si netezirea marginilor;
-	glEnable(GL_POINT_SMOOTH);
-	//  Functia de desenare primeste 3 argumente:
-	//  - arg1 = tipul primitivei desenate,
-	//  - arg2 = indicele primului punct de desenat din buffer,
-	//  - arg3 = numarul de puncte consecutive de desenat;
-	glDrawArrays(GL_LINES, 14, 2);
-	
-	codCol = 8;									//  Culoarea;
-	glUniform1i(codColLocation, codCol);		//	Transmiterea variabilei uniforme pentru COLORARE spre shadere;
-	glLineWidth(15.0);							//  Se seteaza dimensiunea punctelor si netezirea marginilor;
-	glEnable(GL_POINT_SMOOTH);
-	//  Functia de desenare primeste 3 argumente:
-	//  - arg1 = tipul primitivei desenate,
-	//  - arg2 = indicele primului punct de desenat din buffer,
-	//  - arg3 = numarul de puncte consecutive de desenat;
-	glDrawArrays(GL_LINES, 16, 2);
+	//  ------> DESENAREA MASINII 2
+	// mers drept banda dreapta
+	if (j < -325) {
+		matrTransl = glm::translate(glm::mat4(1.0f), glm::vec3(100.0, j, 0.0));
+		myMatrix = resizeMatrix * matrTransl;
+	}
+	// viraj spre stanga de pe banda dreapta
+	else if(j < -300){
+		matrTransl = glm::translate(glm::mat4(1.0f), glm::vec3(100.0, j, 0.0));
+		angle = 3.1415 / 100 * (j + 325);
+		matrRot = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0, 0.0, 1.0));
+		myMatrix = resizeMatrix * matrTransl * matrRot;
+	}
+	// mers drept pe diagonala spre banda din stanga
+	else if (j < -100) {
+		matrTransl = glm::translate(glm::mat4(1.0f), glm::vec3(-200.0 - j, j, 0.0));
+		angle = 3.1415 / 4;
+		matrRot = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0, 0.0, 1.0));
+		myMatrix = resizeMatrix * matrTransl * matrRot;
+	}
+	// viraj spre dreapta pentru a indrepta masina pe banda stanga
+	else if (j < -75) {
+		matrTransl = glm::translate(glm::mat4(1.0f), glm::vec3(-100.0, j, 0.0));
+		angle = -3.1415 / 100 * (j + 100) + 3.1415/4;
+		matrRot = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0, 0.0, 1.0));
+		myMatrix = resizeMatrix * matrTransl * matrRot;
+	}
+	// mers drept pe banda din stanga
+	else if (j < 100) {
+		matrTransl = glm::translate(glm::mat4(1.0f), glm::vec3(-100.0, j, 0.0));
+		myMatrix = resizeMatrix * matrTransl;
+	}
+	// viraj spre stanga spre banda din dreapta
+	else if (j < 125) {
+		matrTransl = glm::translate(glm::mat4(1.0f), glm::vec3(-100.0, j, 0.0));
+		angle = - 3.1415 / 100 * (j - 100);
+		matrRot = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0, 0.0, 1.0));
+		myMatrix = resizeMatrix * matrTransl * matrRot;
+	}
+	// mers drept pe diagonala spre banda din dreapta
+	else if (j < 325) {
+		matrTransl = glm::translate(glm::mat4(1.0f), glm::vec3(-225.0 + j, j, 0.0));
+		angle = -3.1415 / 4;
+		matrRot = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0, 0.0, 1.0));
+		myMatrix = resizeMatrix * matrTransl * matrRot;
+	}
+	// viraj spre stanga pentru a indrepta masina pe banda din dreapta
+	else if (j < 350) {
+		matrTransl = glm::translate(glm::mat4(1.0f), glm::vec3(100.0, j, 0.0));
+		angle = 3.1415 / 100 * (j - 325) - 3.1415/4;
+		matrRot = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0, 0.0, 1.0));
+		myMatrix = resizeMatrix * matrTransl * matrRot;
+	}
+	// mers drept pe banda din dreapta
+	else {
+		matrTransl = glm::translate(glm::mat4(1.0f), glm::vec3(100.0, j, 0.0));
+		myMatrix = resizeMatrix * matrTransl;
+	}
+	DrawCar(myMatrix, 2);
 
 	// ------> DESENAREA TROTUARULUI
-	
-	codCol = 3;									//  Culoarea;
-	glUniform1i(codColLocation, codCol);		//	Transmiterea variabilei uniforme pentru COLORARE spre shadere;
-	glPointSize(15.0);							//  Se seteaza dimensiunea punctelor si netezirea marginilor;
+	myMatrix = resizeMatrix;
+	glUniformMatrix4fv(myMatrixLocation, 1, GL_FALSE, &myMatrix[0][0]);
+	codCol = 3;
+	glUniform1i(codColLocation, codCol);
+	glPointSize(15.0);
 	glEnable(GL_POINT_SMOOTH);
-	//  Functia de desenare primeste 3 argumente:
-	//  - arg1 = tipul primitivei desenate,
-	//  - arg2 = indicele primului punct de desenat din buffer,
-	//  - arg3 = numarul de puncte consecutive de desenat;
 	glDrawArrays(GL_POLYGON, 6, 4);
 
 	codCol = 3;
-	glUniform1i(codColLocation, codCol);		//	Transmiterea variabilei uniforme pentru COLORARE spre shadere;
-	glPointSize(15.0);							//  Se seteaza dimensiunea punctelor si netezirea marginilor;
+	glUniform1i(codColLocation, codCol);
+	glPointSize(15.0);
 	glEnable(GL_POINT_SMOOTH);
-	//  Functia de desenare primeste 3 argumente:
-	//  - arg1 = tipul primitivei desenate,
-	//  - arg2 = indicele primului punct de desenat din buffer,
-	//  - arg3 = numarul de puncte consecutive de desenat;
 	glDrawArrays(GL_POLYGON, 10, 4);
 
 	// ------> DESENAREA TUFISURILOR
 
 	codCol = 4;
-	glUniform1i(codColLocation, codCol);		//	Transmiterea variabilei uniforme pentru COLORARE spre shadere;
-	glPointSize(15.0);							//  Se seteaza dimensiunea punctelor si netezirea marginilor;
+	glUniform1i(codColLocation, codCol);
+	glPointSize(15.0);
 	glEnable(GL_POINT_SMOOTH);
-	//  Functia de desenare primeste 3 argumente:
-	//  - arg1 = tipul primitivei desenate,
-	//  - arg2 = indicele primului punct de desenat din buffer,
-	//  - arg3 = numarul de puncte consecutive de desenat;
-	glDrawArrays(GL_POLYGON, 18, 4);
+	glDrawArrays(GL_POLYGON, 14, 4);
 
 	codCol = 4;
-	glUniform1i(codColLocation, codCol);		//	Transmiterea variabilei uniforme pentru COLORARE spre shadere;
-	glPointSize(15.0);							//  Se seteaza dimensiunea punctelor si netezirea marginilor;
+	glUniform1i(codColLocation, codCol);
+	glPointSize(15.0);
 	glEnable(GL_POINT_SMOOTH);
-	//  Functia de desenare primeste 3 argumente:
-	//  - arg1 = tipul primitivei desenate,
-	//  - arg2 = indicele primului punct de desenat din buffer,
-	//  - arg3 = numarul de puncte consecutive de desenat;
-	glDrawArrays(GL_POLYGON, 22, 4);
+	glDrawArrays(GL_POLYGON, 18, 4);
 
 	// ------> DESENAREA FELINARELOR
 
 	codCol = 6;
-	glUniform1i(codColLocation, codCol);		//	Transmiterea variabilei uniforme pentru COLORARE spre shadere;
-	glPointSize(30.0);							//  Se seteaza dimensiunea punctelor si netezirea marginilor;
+	glUniform1i(codColLocation, codCol);
+	glPointSize(20.0);
 	glEnable(GL_POINT_SMOOTH);
-	//  Functia de desenare primeste 3 argumente:
-	//  - arg1 = tipul primitivei desenate,
-	//  - arg2 = indicele primului punct de desenat din buffer,
-	//  - arg3 = numarul de puncte consecutive de desenat;
-	glDrawArrays(GL_POINTS, 26, 14);
-
-	// ------> DESENAREA MASINII
-	
-	//	Matricea de transformare pentru masina; 
-	myMatrix = resizeMatrix * matrTransl * matrScale1;
-	codCol = 1;
-	//	Transmiterea variabilelor uniforme pentru MATRICEA DE TRANSFORMARE si COLORARE spre shadere;
-	glUniformMatrix4fv(myMatrixLocation, 1, GL_FALSE, &myMatrix[0][0]);
-	glUniform1i(codColLocation, codCol);
-	glDrawArrays(GL_POLYGON, 2, 4);
-
-	// ------> DESENAREA FARURILOR MASINII
-
-	//	Matricea de transformare pentru masina; 
-	myMatrix = resizeMatrix * matrTransl * matrScale1;
-	codCol = 6;
-	//	Transmiterea variabilelor uniforme pentru MATRICEA DE TRANSFORMARE si COLORARE spre shadere;
-	glUniformMatrix4fv(myMatrixLocation, 1, GL_FALSE, &myMatrix[0][0]);
-	glUniform1i(codColLocation, codCol);
-	glDrawArrays(GL_POINTS, 40, 2);
-
-	// ------> COSMETIZAREA MASINII - BARA + LUMINA FARURI + STOPURI
-
-	//	Matricea de transformare pentru masina; 
-	myMatrix = resizeMatrix * matrTransl * matrScale1;
-	codCol = 5;
-	//	Transmiterea variabilelor uniforme pentru MATRICEA DE TRANSFORMARE si COLORARE spre shadere;
-	glUniformMatrix4fv(myMatrixLocation, 1, GL_FALSE, &myMatrix[0][0]);
-	glUniform1i(codColLocation, codCol);
-	glDrawArrays(GL_POLYGON, 42, 4);
-	
-	//	Matricea de transformare pentru masina; 
-	myMatrix = resizeMatrix * matrTransl * matrScale1;
-	srand(time(NULL));
-	codCol = 6 + rand() % 2;  // Generează un număr aleatoriu între 6 și 7 și actualizează alternatorul
-	//	Transmiterea variabilelor uniforme pentru MATRICEA DE TRANSFORMARE si COLORARE spre shadere;
-	glUniformMatrix4fv(myMatrixLocation, 1, GL_FALSE, &myMatrix[0][0]);
-	glUniform1i(codColLocation, codCol);
-	glDrawArrays(GL_TRIANGLES, 46, 6);
-
-	//	Matricea de transformare pentru masina; 
-	myMatrix = resizeMatrix * matrTransl * matrScale1;
-	codCol = 2;
-	glLineWidth(30.0);
-	//	Transmiterea variabilelor uniforme pentru MATRICEA DE TRANSFORMARE si COLORARE spre shadere;
-	glUniformMatrix4fv(myMatrixLocation, 1, GL_FALSE, &myMatrix[0][0]);
-	glUniform1i(codColLocation, codCol);
-	glDrawArrays(GL_LINES, 52, 2);
-
-	//	Matricea de transformare pentru masina; 
-	myMatrix = resizeMatrix * matrTransl * matrScale1;
-	codCol = 7;
-	glLineWidth(50.0);
-	//	Transmiterea variabilelor uniforme pentru MATRICEA DE TRANSFORMARE si COLORARE spre shadere;
-	glUniformMatrix4fv(myMatrixLocation, 1, GL_FALSE, &myMatrix[0][0]);
-	glUniform1i(codColLocation, codCol);
-	glDrawArrays(GL_LINES, 54, 2);
-
-	//	Matricea de transformare pentru masina; 
-	myMatrix = resizeMatrix * matrTransl * matrScale1;
-	codCol = 7;
-	glLineWidth(50.0);
-	//	Transmiterea variabilelor uniforme pentru MATRICEA DE TRANSFORMARE si COLORARE spre shadere;
-	glUniformMatrix4fv(myMatrixLocation, 1, GL_FALSE, &myMatrix[0][0]);
-	glUniform1i(codColLocation, codCol);
-	glDrawArrays(GL_LINES, 56, 2);
+	for (int y = -500; y <= 500; y += 100) {
+		for (int x = -200; x <= 200; x += 400) {
+			myMatrix = resizeMatrix * glm::translate(glm::mat4(1.0f), glm::vec3((float)x, (float)y, 0.0));
+			glUniformMatrix4fv(myMatrixLocation, 1, GL_FALSE, &myMatrix[0][0]);
+			glDrawArrays(GL_POINTS, 22, 1);
+		}
+	}
 
 	glutSwapBuffers();	//	Inlocuieste imaginea deseneata in fereastra cu cea randata; 
 	glFlush();	//  Asigura rularea tuturor comenzilor OpenGL apelate anterior;
