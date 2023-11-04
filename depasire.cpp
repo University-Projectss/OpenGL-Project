@@ -53,7 +53,7 @@ int codCol;
 float xMin = -250.f, xMax = 250.f, yMin = -500.f, yMax = 500.f;
 
 //	Variabile pentru deplasarea pe axa Ox si pentru rotatie;
-float i = -375.0, j = -750.0, alpha = 0.0, alpha2 = 0.0, step=0.5, step2=1.0, beta = 0.002, angle = 0, aux = 0.f;
+float i = -375.0, j = -750.0, alpha = 0.0, alpha2 = 0.0, step = 0.05, step2 = 0.1, beta = 0.002, angle = 0, aux = 0.f, l = -1000.0f, alpha3 = 0.0, step3 = 0.1;
 
 //	Functie pentru afisarea matricei de transformare;
 void DisplayMatrix()
@@ -72,13 +72,16 @@ void MoveUp(void)
 {
 	i = i + alpha;
 	j = j + alpha2;
-	if (i > 600.0) {
+	l = l + alpha3;
+	if (i > 900.0) {
 		alpha = 0;
 		alpha2 = 0;
+		alpha3 = 0;
 	}
 	else if (i < 0.0) {
 		alpha = step;
 		alpha2 = step2;
+		alpha3 = step3;
 	}
 	angle = angle - beta;	//	Se actualizeaza unghiul de rotatie constant (mentine orbitarea);
 	glutPostRedisplay();	//	Forteza redesenarea scenei;
@@ -90,6 +93,7 @@ void UseMouse(int button, int state, int x, int y)
 	
 			alpha = step;
 			alpha2 = step2;
+			alpha3 = step3;
 		glutIdleFunc(MoveUp);
 	
 }
@@ -174,7 +178,33 @@ void CreateVBO(void)
 		 -10.0f, -55.0f, 0.0f, 1.0f,
 
 		  10.0f, -55.0f, 0.0f, 1.0f, 
-		  25.0f, -50.0f, 0.0f, 1.0f
+		  25.0f, -50.0f, 0.0f, 1.0f,
+
+	//Varfuri pentru masina de politie
+		   - 10.0f ,  -43.0f , 0.0f, 1.0f,
+		   10.0f , -43.0f , 0.0f, 1.0f,
+		   10.0f , 50.0f , 0.0f, 1.0f,
+		  -10.0f , 50.0f , 0.0f, 1.0f,
+
+		  -25.0f ,	0.0f , 0.0f, 1.0f,
+		   25.0f ,  0.0f , 0.0f, 1.0f,
+		   25.0f , 20.0f , 0.0f, 1.0f,
+		  -25.0f , 20.0f , 0.0f, 1.0f,
+
+		   -30.0f ,	0.0f , 0.0f, 1.0f,
+		   -10.0f ,  0.0f , 0.0f, 1.0f,
+		   -10.0f , 20.0f , 0.0f, 1.0f,
+		  -30.0f , 20.0f , 0.0f, 1.0f,
+
+		  30.0f ,	0.0f , 0.0f, 1.0f,
+		   10.0f ,  0.0f , 0.0f, 1.0f,
+		   10.0f , 20.0f , 0.0f, 1.0f,
+		  30.0f , 20.0f , 0.0f, 1.0f,
+
+		  5.0f, 7.0f, 0.0f, 1.0f,
+		  18.0f, 10.0f, 0.0f, 1.0f,
+		  18.0f, -10.0f, 0.0f, 1.0f,
+		  5.0f, -7.0f, 0.0f, 1.0f,
 	};
 
 	//  Culorile axelor;
@@ -247,39 +277,62 @@ void Initialize(void)
 	myMatrixLocation = glGetUniformLocation(ProgramId, "myMatrix");
 }
 
-void DrawCar(glm::mat4 mymatrix, int carCodCol) {
+void DrawCar(glm::mat4 mymatrix, int carCodCol, bool police) {
 	glUniformMatrix4fv(myMatrixLocation, 1, GL_FALSE, &myMatrix[0][0]);
-	// ------> DESENAREA MASINII
-	codCol = carCodCol;
-	glUniform1i(codColLocation, codCol);
-	glDrawArrays(GL_POLYGON, 2, 4);
+		// ------> DESENAREA MASINII
+		codCol = carCodCol;
+		glUniform1i(codColLocation, codCol);
+		glDrawArrays(GL_POLYGON, 2, 4);
 
-	// ------> DESENAREA FARURILOR MASINII
-	codCol = 6;
-	glUniform1i(codColLocation, codCol);
-	glPointSize(10.0);
-	glDisable(GL_POINT_SMOOTH);
-	glDrawArrays(GL_POINTS, 23, 2);
+		// ------> DESENAREA FARURILOR MASINII
+		codCol = 6;
+		glUniform1i(codColLocation, codCol);
+		glPointSize(10.0);
+		glDisable(GL_POINT_SMOOTH);
+		glDrawArrays(GL_POINTS, 23, 2);
 
-	// ------> COSMETIZAREA MASINII - BARA + LUMINA FARURI + STOPURI
-	codCol = 5;
-	glUniform1i(codColLocation, codCol);
-	glDrawArrays(GL_POLYGON, 25, 4);
+		// ------> COSMETIZAREA MASINII - BARA + LUMINA FARURI + STOPURI
+		codCol = 5;
+		glUniform1i(codColLocation, codCol);
+		glDrawArrays(GL_POLYGON, 25, 4);
 
-	codCol = 6;
-	glUniform1i(codColLocation, codCol);
-	glDrawArrays(GL_TRIANGLES, 29, 6);
+		codCol = 6;
+		glUniform1i(codColLocation, codCol);
+		glDrawArrays(GL_TRIANGLES, 29, 6);
 
-	codCol = 2;
-	glLineWidth(30.0);
-	glUniform1i(codColLocation, codCol);
-	glDrawArrays(GL_LINES, 35, 2);
+		codCol = 2;
+		glLineWidth(20.0);
+		glUniform1i(codColLocation, codCol);
+		glDrawArrays(GL_LINES, 35, 2);
 
-	codCol = 7;
-	glLineWidth(50.0);
-	glUniform1i(codColLocation, codCol);
-	glDrawArrays(GL_LINES, 37, 2);
-	glDrawArrays(GL_LINES, 39, 2);
+		codCol = 7;
+		glLineWidth(20.0);
+		glUniform1i(codColLocation, codCol);
+		glDrawArrays(GL_LINES, 37, 2);
+		glDrawArrays(GL_LINES, 39, 2);
+	if (police){
+		codCol = 1;
+		glLineWidth(15.0);
+		glUniform1i(codColLocation, codCol);
+		glDrawArrays(GL_POLYGON, 41, 4);
+
+		codCol = 5;
+		glLineWidth(10.0);
+		glUniform1i(codColLocation, codCol);
+		glDrawArrays(GL_POLYGON, 45, 4);
+
+		codCol = 2;
+		glLineWidth(10.0);
+		glUniform1i(codColLocation, codCol);
+		glDrawArrays(GL_POLYGON, 49, 4);
+
+		codCol = 1;
+		glLineWidth(15.0);
+		glUniform1i(codColLocation, codCol);
+		glDrawArrays(GL_POLYGON, 53, 4);
+
+
+	}
 
 }
 
@@ -301,10 +354,31 @@ void RenderFunction(void)
 	glLineWidth(10.0);
 	glDrawArrays(GL_LINES, 0, 2);
 
+	// ------> DESENAREA MASINII DE POLITIE
+	matrTransl = glm::translate(glm::mat4(1.0f), glm::vec3(-100.0, l, 0.0));
+	myMatrix = resizeMatrix * matrTransl;
+	DrawCar(myMatrix, 9, true);
+
+	matrTransl = glm::translate(glm::mat4(1.0f), glm::vec3(-80.0, l + 10, 0.0));
+	angle = l / 20;
+	matrRot = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0, 0.0, 1.0));
+	myMatrix = resizeMatrix * matrTransl * matrRot;
+	glUniformMatrix4fv(myMatrixLocation, 1, GL_FALSE, &myMatrix[0][0]);
+	glDrawArrays(GL_POLYGON, 57, 4);
+
+	codCol = 2;
+	glUniform1i(codColLocation, codCol);
+	matrTransl = glm::translate(glm::mat4(1.0f), glm::vec3(-120.0, l + 10, 0.0));
+	angle = l / 20;
+	matrRot = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0, 0.0, 1.0));
+	myMatrix = resizeMatrix * matrTransl * matrRot;
+	glUniformMatrix4fv(myMatrixLocation, 1, GL_FALSE, &myMatrix[0][0]);
+	glDrawArrays(GL_POLYGON, 57, 4);
+
 	//  ------> DESENAREA MASINII 1
 	matrTransl = glm::translate(glm::mat4(1.0f), glm::vec3(100.0, i, 0.0));
 	myMatrix = resizeMatrix * matrTransl;
-	DrawCar(myMatrix, 1);
+	DrawCar(myMatrix, 1, false);
 
 	//  ------> DESENAREA MASINII 2
 	// mers drept banda dreapta
@@ -364,7 +438,7 @@ void RenderFunction(void)
 		matrTransl = glm::translate(glm::mat4(1.0f), glm::vec3(100.0, j, 0.0));
 		myMatrix = resizeMatrix * matrTransl;
 	}
-	DrawCar(myMatrix, 2);
+	DrawCar(myMatrix, 2,false);
 
 	// ------> DESENAREA TROTUARULUI
 	myMatrix = resizeMatrix;
