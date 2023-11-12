@@ -53,7 +53,7 @@ int codCol;
 float xMin = -250.f, xMax = 250.f, yMin = -500.f, yMax = 500.f;
 
 //	Variabile pentru deplasarea pe axa Ox si pentru rotatie;
-float i = -375.0, j = -750.0, alpha = 0.0, alpha2 = 0.0, step = 0.05, step2 = 0.1, beta = 0.002, angle = 0, aux = 0.f, l = -1000.0f, alpha3 = 0.0, step3 = 0.1;
+float i = -375.0, j = -750.0, alpha = 0.0, alpha2 = 0.0, step = 0.02, step2 = 0.04, beta = 0.002, angle = 0, aux = 0.f, l = -1200.0f, alpha3 = 0.0, step3 = 0.04;
 
 //	Functie pentru afisarea matricei de transformare;
 void DisplayMatrix()
@@ -288,7 +288,7 @@ void DrawCar(glm::mat4 mymatrix, int carCodCol, bool police) {
 		codCol = 6;
 		glUniform1i(codColLocation, codCol);
 		glPointSize(10.0);
-		glDisable(GL_POINT_SMOOTH);
+		glEnable(GL_POINT_SMOOTH);
 		glDrawArrays(GL_POINTS, 23, 2);
 
 		// ------> COSMETIZAREA MASINII - BARA + LUMINA FARURI + STOPURI
@@ -301,12 +301,12 @@ void DrawCar(glm::mat4 mymatrix, int carCodCol, bool police) {
 		glDrawArrays(GL_TRIANGLES, 29, 6);
 
 		codCol = 2;
-		glLineWidth(20.0);
+		glLineWidth(10.0);
 		glUniform1i(codColLocation, codCol);
 		glDrawArrays(GL_LINES, 35, 2);
 
 		codCol = 7;
-		glLineWidth(20.0);
+		glLineWidth(10.0);
 		glUniform1i(codColLocation, codCol);
 		glDrawArrays(GL_LINES, 37, 2);
 		glDrawArrays(GL_LINES, 39, 2);
